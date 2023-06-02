@@ -1,14 +1,14 @@
 "use client";
 
-
 import { Song } from "@/types";
 import LikeButton from "./LikeButton";
 import MediaItem from "./MediaItem";
-
 import { BsPauseFill, BsPlayFill } from "react-icons/bs";
 import { AiFillStepBackward, AiFillStepForward } from "react-icons/ai";
 import { HiSpeakerWave, HiSpeakerXMark } from "react-icons/hi2";
 import Slider from "./Slider";
+import usePlayer from "@/hooks/usePlayer";
+import { useState } from "react";
 
 interface PlayerContentProps {
     song: Song;
@@ -19,8 +19,43 @@ const PlayerContet: React.FC<PlayerContentProps> = ({
     song,
     songUrl
 }) => {
-    const Icon = true ? BsPauseFill : BsPlayFill
-    const VolumeIcon = true ? HiSpeakerXMark : HiSpeakerWave;
+    const player = usePlayer();
+    const [volume, setVolume] = useState(1);
+    const [isPlaying, setIsPlaying] = useState(false);
+   
+    const Icon = isPlaying ? BsPauseFill : BsPlayFill
+    const VolumeIcon = volume ===0 ? HiSpeakerXMark : HiSpeakerWave; //if mute display mute icon
+
+   const onPlayNext = () => {
+    if (player.ids.length === 0) { //if there are even songs to be played
+        return;
+    }
+
+    const currentIndex = player.ids.findIndex((id) => id === player.activeId);
+    const nextSong = player.ids[currentIndex + 1];
+
+    if (!nextSong) {
+        return player.setId(player.ids[0]) //if the song is the last one in the array and we press next, reset entire playlist by playing first song
+    }
+
+    player.setId(nextSong);
+    }
+
+    const onPlayPrevious = () => {
+        if (player.ids.length === 0) { //if there are even songs to be played
+            return;
+        }
+    
+        const currentIndex = player.ids.findIndex((id) => id === player.activeId);
+        const previousSong = player.ids[currentIndex - 1];
+    
+        if (!previousSong) {
+            return player.setId(player.ids[player.ids.length-1]) //loads last song if we are on the first song
+        }
+    
+        player.setId(previousSong);
+        }
+
     return (
         <div className="grid grid-cols-2 md:grid-cols-3 h-full">
             <div className="
@@ -75,7 +110,7 @@ const PlayerContet: React.FC<PlayerContentProps> = ({
             "
             >
                 <AiFillStepBackward 
-                onClick={() => {}}
+                onClick={onPlayPrevious}
                 size={30}
                 className="
                 text-neutral-400
@@ -101,7 +136,7 @@ const PlayerContet: React.FC<PlayerContentProps> = ({
                     <Icon size={30} className="text-black" />
                 </div>
                 <AiFillStepForward 
-                onClick ={() => {}}
+                onClick ={onPlayNext}
                 size={30}
                 className="
                 text-neutral-400
@@ -122,6 +157,7 @@ const PlayerContet: React.FC<PlayerContentProps> = ({
                     <Slider />
                 </div>
             </div>
+
         </div>
     )
 }
