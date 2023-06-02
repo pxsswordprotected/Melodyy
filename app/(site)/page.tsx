@@ -7,6 +7,9 @@ export const revalidate = 0; //this page will not be cached and the data will al
 
 export default async function Home() {
   const songs = await getSongs();
+
+
+
   return (
    <div className="
    bg-neutral-900
