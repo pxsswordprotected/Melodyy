@@ -8,7 +8,8 @@ import { AiFillStepBackward, AiFillStepForward } from "react-icons/ai";
 import { HiSpeakerWave, HiSpeakerXMark } from "react-icons/hi2";
 import Slider from "./Slider";
 import usePlayer from "@/hooks/usePlayer";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import useSound from "use-sound";
 
 interface PlayerContentProps {
     song: Song;
@@ -29,17 +30,17 @@ const PlayerContet: React.FC<PlayerContentProps> = ({
    const onPlayNext = () => {
     if (player.ids.length === 0) { //if there are even songs to be played
         return;
-    }
+      }
 
     const currentIndex = player.ids.findIndex((id) => id === player.activeId);
     const nextSong = player.ids[currentIndex + 1];
 
     if (!nextSong) {
         return player.setId(player.ids[0]) //if the song is the last one in the array and we press next, reset entire playlist by playing first song
-    }
+     }
 
     player.setId(nextSong);
-    }
+      }
 
     const onPlayPrevious = () => {
         if (player.ids.length === 0) { //if there are even songs to be played
@@ -54,7 +55,47 @@ const PlayerContet: React.FC<PlayerContentProps> = ({
         }
     
         player.setId(previousSong);
+    };
+
+    const [play, { pause, sound }] = useSound(
+        songUrl,
+        {
+            volume: volume,
+            onplay: () => setIsPlaying(true),
+            onend: () => {
+                setIsPlaying(false);
+                onPlayNext();
+            },
+            onpause: () => setIsPlaying(false),
+            format: ['mp3']
         }
+    );
+
+    useEffect(() => {
+        sound?.play();
+        
+        return () => {
+            sound?.unload();
+        }
+    }, [sound]);
+
+    const handlePlay = () => {
+        if (!isPlaying) {
+            play();
+        }
+        else {
+            pause();
+        }
+    };
+
+    const toggleMute = () => {
+        if (volume === 0) {
+            setVolume(1);
+        }
+        else{ 
+            setVolume(0);
+        }
+    }
 
     return (
         <div className="grid grid-cols-2 md:grid-cols-3 h-full">
@@ -80,7 +121,7 @@ const PlayerContet: React.FC<PlayerContentProps> = ({
             "
             >
                 <div
-                  onClick={() => {}}
+                  onClick={handlePlay}
                   className="
                   h-10
                   w-10
@@ -120,7 +161,7 @@ const PlayerContet: React.FC<PlayerContentProps> = ({
                 "
                 />
                 <div
-                onClick ={() => {}}
+                onClick ={handlePlay}
                 className="
                 flex
                 items-center
@@ -150,11 +191,14 @@ const PlayerContet: React.FC<PlayerContentProps> = ({
             <div className="hidden md:flex w-full justify-end pr-2">
                 <div className="flex items-center gap-x-2 w-[120px]"> 
                 <VolumeIcon 
-                onClick ={() => {}}
+                onClick ={toggleMute}
                 className="cursor-pointer"
                 size={20}
                 />
-                    <Slider />
+                    <Slider
+                        value ={volume}
+                        onChange={(value) => setVolume(value)}
+                    />
                 </div>
             </div>
 
