@@ -2,6 +2,8 @@ import getSongs from "@/actions/getSongs";
 import Header from "@/components/Header";
 import ListItem from "@/components/ListItem";
 import PageContent from "./components/PageContent";
+import Head from 'next/head';
+
 
 export const revalidate = 0; //this page will not be cached and the data will always be up to date
 
@@ -19,6 +21,10 @@ export default async function Home() {
    overflow-hidden
    overflow-y-auto
    ">
+    <Head>
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+</Head>
+
     <Header>
       <div className="mb-2">
         <h1

@@ -8,6 +8,8 @@ import ToasterProvider from '@/providers/ToasterProvider'
 import getSongsByUserId from '@/actions/getSongsByUserId'
 import Player from '@/components/Player'
 import getActiveProductsWithPrices from '@/actions/getActiveProductsWithPrices'
+import Head from 'next/head';
+
 
 const font = Figtree({ subsets: ['latin'] })
 

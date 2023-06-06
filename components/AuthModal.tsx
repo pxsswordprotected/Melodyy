@@ -10,11 +10,11 @@ import { useEffect } from "react";
 import Modal from "./Modal";
 
 const AuthModal = () => {
-    const supabaseClient = useSupabaseClient();
-    const router = useRouter();
     const { session } = useSessionContext();
-    const {} = useAuthModal();
+    const router = useRouter();
     const { onClose, isOpen } = useAuthModal();
+    
+    const supabaseClient = useSupabaseClient();
 
     useEffect(() => {
         if (session) {
@@ -36,7 +36,7 @@ const AuthModal = () => {
         title="Welcome Back"
         description="Login to your account"
         isOpen={isOpen}
-        onChange={() => {onChange}}
+        onChange={onChange}
         >
             <Auth 
             theme="dark"
