@@ -1,7 +1,6 @@
-//interfaces that define the data structures used in a Spotify clone app with integration of the Stripe payment platform
-//can be used for type checking and ensuring that the data passed through the app follows the specified format. 
-
+ 
 import Stripe from "stripe";
+
 
 export interface Song {
     id: string;
@@ -21,7 +20,7 @@ export interface UserDetails {
     billing_address?: Stripe.Address;
     payment_method?: Stripe.PaymentMethod[Stripe.PaymentMethod.Type];
 
-};
+}
 
 export interface Product {
     id: string;
@@ -45,6 +44,10 @@ export interface Price {
     trial_period_days?: number | null;
     metadata?: Stripe.Metadata;
     producsts?: Product;
+}
+
+export interface ProductWithPrice extends Product {
+    prices?: Price[];
 }
 
 export interface Subscription {
